@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to JSON</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<div id="jsonOutput"></div>
+
+<script type="text/javascript">
+    
+    function excelToJsonAndShow() {
+        var file = 'bayi.xlsx'; 
+
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', file, true);
+        xhr.responseType = 'arraybuffer';
+
+        xhr.onload = function(e) {
+            var arraybuffer = xhr.response;
+            var data = new Uint8Array(arraybuffer);
+            var workbook = XLSX.read(data, { type: 'array' });
+            var sheetName = 'Sheet1'; 
+            var jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+            showJsonData(jsonData);
+        };
+
+        xhr.send();
+    }
+
+    
+    function showJsonData(jsonData) {
+        var jsonOutputDiv = document.getElementById('jsonOutput');
+        jsonOutputDiv.innerHTML = '<pre>' + JSON.stringify(jsonData, null, 2) + '</pre>';
+    }
+
+    
+    window.onload = function() {
+        excelToJsonAndShow();
+    };
+</script>
+
+</body>
+</html>
